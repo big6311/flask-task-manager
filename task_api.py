@@ -114,12 +114,3 @@ def home():
 if __name__ == "__main__":
     load_tasks()
 
-    # When running in the cloud, the platform will set PORT.
-    # Locally it'll default to 5000.
-    port = int(os.environ.get("PORT", 5000))
-
-    app.run(
-        host="0.0.0.0",  # listen on all network interfaces (needed in cloud)
-        port=port,
-        debug=False      # debug=False in production
-    )

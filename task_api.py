@@ -2,7 +2,18 @@ from flask import Flask, request, jsonify, render_template
 import json
 import os
 
+from models import db, Task
+import os
+
 app = Flask(__name__)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URL",
+    "sqlite:///tasks.db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db.init_app(app)
 
 DATA_FILE = "tasks.json"
 tasks = []
@@ -112,4 +123,7 @@ def home():
     return render_template("tasks.html")
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+
     load_tasks()

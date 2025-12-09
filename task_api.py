@@ -1,19 +1,21 @@
-from flask import Flask, request, jsonify, render_template
+# task_api.py
+import os
 import json
-import os
-
-from models import db, Task
-import os
+from flask import Flask, request, jsonify, render_template
+from models import db, Task  # <- now imports db AND Task from models.py
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL",
-    "sqlite:///tasks.db"
-)
+# Use SQLite for now
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tasks.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Attach db to this app
 db.init_app(app)
+
+# Create tables when the app starts (locally)
+with app.app_context():
+    db.create_all()
 
 DATA_FILE = "tasks.json"
 tasks = []
@@ -123,7 +125,4 @@ def home():
     return render_template("tasks.html")
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-
-    load_tasks()
+    app.run(debug=True)
